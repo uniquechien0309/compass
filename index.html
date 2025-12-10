@@ -4,7 +4,7 @@
     <!-- 務必使用 UTF-8 編碼，否則中文會變亂碼 -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Expedition Compass - 專業探險指南針</title>
+    <title>Pro Expedition Compass - 極簡版</title>
     <!-- 載入 Tailwind CSS (負責樣式) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -18,7 +18,7 @@
         
         /* 羅盤轉動動畫 */
         #compass-dial {
-            transition: transform 0.1s ease-out; /* 稍微加快反應速度 */
+            transition: transform 0.1s ease-out; /* 反應速度 */
             will-change: transform;
         }
     </style>
@@ -36,7 +36,7 @@
         
         <!-- 頂部狀態列 -->
         <div class="h-8 w-full flex justify-between items-center px-8 mt-5 opacity-60">
-            <span class="text-xs font-medium tracking-wide">LIVE DATA</span>
+            <span class="text-xs font-medium tracking-wide">COMPASS MODE</span>
             <div class="flex gap-2">
                 <div id="permission-dot" class="w-4 h-4 rounded-full border border-current opacity-50 transition-colors"></div>
                 <div class="w-4 h-4 rounded-full border border-current opacity-50"></div>
@@ -46,11 +46,11 @@
             </div>
         </div>
 
-        <!-- 主要內容區 -->
-        <div class="flex-1 flex flex-col items-center justify-between py-6 px-6 relative z-10">
+        <!-- 主要內容區 (使用 justify-center 讓羅盤垂直置中) -->
+        <div class="flex-1 flex flex-col items-center justify-center py-6 px-6 relative z-10 gap-8">
             
             <!-- 標題 -->
-            <div class="text-center mt-2">
+            <div class="text-center">
                 <div class="flex items-center justify-center gap-2 text-orange-500 tracking-[0.3em] text-[10px] md:text-xs font-bold uppercase">
                     <i data-lucide="compass" class="w-4 h-4"></i>
                     <span>Pro Expedition Compass</span>
@@ -58,7 +58,7 @@
             </div>
 
             <!-- 羅盤圓盤區域 -->
-            <div class="relative w-72 h-72 md:w-[420px] md:h-[420px] flex items-center justify-center my-4">
+            <div class="relative w-72 h-72 md:w-[420px] md:h-[420px] flex items-center justify-center">
                 
                 <!-- 鎖定畫面 / 啟動按鈕 (未授權時顯示) -->
                 <div id="lock-screen" class="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-slate-900/60 rounded-full">
@@ -105,90 +105,33 @@
                     </div>
                 </div>
             </div>
-
-            <!-- AI 分析按鈕 -->
-            <button
-                id="analyze-btn"
-                disabled
-                class="w-full flex items-center justify-center gap-2 p-3 rounded-xl font-bold transition-all mt-4 mb-3 text-lg bg-slate-700 text-slate-400 cursor-not-allowed"
-            >
-                <i data-lucide="sparkles" class="w-5 h-5"></i>
-                <span id="analyze-text">✨ 深度地點分析</span>
-            </button>
-
-            <!-- 底部數據卡片 -->
-            <div class="w-full grid grid-cols-2 gap-3 md:gap-5 mt-4 mb-2">
-                <!-- 緯度 -->
-                <div class="bg-slate-800/40 border border-white/5 rounded-2xl p-4 flex flex-col gap-2 backdrop-blur-md">
-                    <div class="flex items-center gap-2 mb-1">
-                        <div class="p-1.5 rounded-lg bg-slate-900/50"><i data-lucide="navigation" class="w-5 h-5 text-orange-400"></i></div>
-                        <span class="text-[10px] md:text-xs font-bold tracking-widest text-slate-400">緯度 LATITUDE</span>
-                    </div>
-                    <div id="val-lat" class="text-xl md:text-3xl font-mono font-medium text-slate-100 pl-1 tracking-tight truncate">偵測中...</div>
-                </div>
-                <!-- 經度 -->
-                <div class="bg-slate-800/40 border border-white/5 rounded-2xl p-4 flex flex-col gap-2 backdrop-blur-md">
-                    <div class="flex items-center gap-2 mb-1">
-                        <div class="p-1.5 rounded-lg bg-slate-900/50"><i data-lucide="navigation" class="w-5 h-5 text-orange-400 rotate-90"></i></div>
-                        <span class="text-[10px] md:text-xs font-bold tracking-widest text-slate-400">經度 LONGITUDE</span>
-                    </div>
-                    <div id="val-lng" class="text-xl md:text-3xl font-mono font-medium text-slate-100 pl-1 tracking-tight truncate">偵測中...</div>
-                </div>
-                <!-- 海拔 -->
-                <div class="bg-slate-800/40 border border-white/5 rounded-2xl p-4 flex flex-col gap-2 backdrop-blur-md">
-                    <div class="flex items-center gap-2 mb-1">
-                        <div class="p-1.5 rounded-lg bg-slate-900/50"><i data-lucide="mountain" class="w-5 h-5 text-orange-400"></i></div>
-                        <span class="text-[10px] md:text-xs font-bold tracking-widest text-slate-400">海拔 ALTITUDE</span>
-                    </div>
-                    <div id="val-alt" class="text-xl md:text-3xl font-mono font-medium text-slate-100 pl-1 tracking-tight truncate">-- m</div>
-                </div>
-                <!-- 速度 -->
-                <div class="bg-slate-800/40 border border-white/5 rounded-2xl p-4 flex flex-col gap-2 backdrop-blur-md">
-                    <div class="flex items-center gap-2 mb-1">
-                        <div class="p-1.5 rounded-lg bg-slate-900/50"><i data-lucide="gauge" class="w-5 h-5 text-orange-400"></i></div>
-                        <span class="text-[10px] md:text-xs font-bold tracking-widest text-slate-400">速度 SPEED</span>
-                    </div>
-                    <div id="val-speed" class="text-xl md:text-3xl font-mono font-medium text-slate-100 pl-1 tracking-tight truncate">-- km/h</div>
-                </div>
-            </div>
+            
+            <!-- 底部空白填充，確保視覺平衡 -->
+            <div class="h-8"></div>
         </div>
     </div>
 
-    <!-- 彈出視窗 (Modal) -->
-    <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-sm p-4">
+    <!-- 錯誤訊息 Modal (僅用於權限錯誤) -->
+    <div id="error-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-sm p-4">
         <div class="bg-slate-800 p-6 rounded-3xl w-full max-w-md mx-4 border border-slate-700 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
-                <h2 id="modal-title" class="text-xl font-bold text-orange-400 flex items-center gap-2">
-                    <i id="modal-icon" data-lucide="sparkles" class="w-6 h-6"></i>
-                    <span id="modal-title-text">地點分析報告</span>
+                <h2 id="modal-title" class="text-xl font-bold text-red-400 flex items-center gap-2">
+                    <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                    <span>權限錯誤</span>
                 </h2>
                 <button id="modal-close" class="text-slate-400 hover:text-white p-1 rounded-full bg-slate-700/50">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-
-            <div id="modal-content" class="max-h-96 overflow-y-auto text-slate-300 text-sm leading-relaxed mb-4 p-3 bg-slate-900 rounded-xl border border-slate-700">
-                <!-- 內容由 JS 填充 -->
-            </div>
-
-            <div id="modal-sources" class="hidden mt-4 border-t border-slate-700 pt-3">
-                <p class="text-xs font-bold uppercase text-slate-500 mb-2">參考來源 (Grounding Sources):</p>
-                <ul id="sources-list" class="space-y-1"></ul>
-            </div>
+            <div id="modal-content" class="text-slate-300 text-sm leading-relaxed mb-4"></div>
         </div>
     </div>
 
     <script>
         // ================= 設定與狀態 =================
-        // API Key 保持為空 (在發布環境中通常需要透過後端或環境變數注入，這裡保留原始設定)
-        const apiKey = ""; 
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-        
         const state = {
             heading: 0,
-            permissionGranted: false,
-            location: { lat: 0, lng: 0, alt: 0, speed: 0, hasData: false },
-            isAnalyzing: false
+            permissionGranted: false
         };
 
         // ================= 初始化 DOM =================
@@ -200,19 +143,11 @@
             displayZh: document.getElementById('display-zh'),
             displayEn: document.getElementById('display-en'),
             displayDeg: document.getElementById('display-deg'),
-            valLat: document.getElementById('val-lat'),
-            valLng: document.getElementById('val-lng'),
-            valAlt: document.getElementById('val-alt'),
-            valSpeed: document.getElementById('val-speed'),
-            analyzeBtn: document.getElementById('analyze-btn'),
-            analyzeText: document.getElementById('analyze-text'),
-            modal: document.getElementById('modal'),
-            modalTitleText: document.getElementById('modal-title-text'),
+            // Modal DOMs
+            modal: document.getElementById('error-modal'),
+            modalTitle: document.getElementById('modal-title'),
             modalContent: document.getElementById('modal-content'),
-            modalSources: document.getElementById('modal-sources'),
-            sourcesList: document.getElementById('sources-list'),
-            modalClose: document.getElementById('modal-close'),
-            modalIcon: document.getElementById('modal-icon')
+            modalClose: document.getElementById('modal-close')
         };
 
         // ================= 輔助函數 =================
@@ -220,12 +155,6 @@
             const directions = ["北 N", "東北 NE", "東 E", "東南 SE", "南 S", "西南 SW", "西 W", "西北 NW"];
             const index = Math.round(((deg %= 360) < 0 ? deg + 360 : deg) / 45) % 8;
             return directions[index];
-        }
-
-        function formatCoord(val, type) {
-            if (!state.location.hasData) return "偵測中...";
-            const dir = type === 'lat' ? (val >= 0 ? 'N' : 'S') : (val >= 0 ? 'E' : 'W');
-            return `${Math.abs(val).toFixed(4)}° ${dir}`;
         }
 
         function createIcons() {
@@ -243,34 +172,16 @@
                 const isMajor = i % 9 === 0; 
                 const isSemi = i % 3 === 0;
                 
-                const mark = document.createElement('div');
-                mark.className = 'absolute top-0 left-1/2 -translate-x-1/2 origin-bottom';
-                
-                // 設定高度與寬度
-                const h = isMajor ? '24px' : (isSemi ? '14px' : '8px');
-                const w = isMajor ? '3px' : '1px';
-                const bg = isMajor ? (i === 0 ? '#ef4444' : 'white') : 'rgba(255,255,255,0.3)';
-                
-                mark.style.height = h;
-                mark.style.width = w;
-                mark.style.backgroundColor = bg;
-                
-                // 關鍵：設定旋轉中心點 (根據圓盤大小 288px (w-72) 和 420px (md:w-[420px]) 調整)
-                // 這裡使用 CSS transform-origin 的一個小技巧：
-                // 我們讓刻度位於頂部，然後將旋轉中心點設為圓心 (y軸向下 144px 或 210px)
-                // 為了適應 RWD，我們使用 CSS 變數或簡單的 JS 計算
-                // 但為了簡單，這裡用 transform-origin 50% [radius]px
-                
-                // 簡單解法：將刻度包在一個全尺寸的容器中旋轉
+                // 創建一個旋轉的容器，將刻度放在容器的頂部
                 const wrapper = document.createElement('div');
                 wrapper.className = 'absolute inset-0';
                 wrapper.style.transform = `rotate(${deg}deg)`;
                 
                 const tick = document.createElement('div');
                 tick.className = 'mx-auto';
-                tick.style.height = h;
-                tick.style.width = w;
-                tick.style.backgroundColor = bg;
+                tick.style.height = isMajor ? '24px' : (isSemi ? '14px' : '8px');
+                tick.style.width = isMajor ? '3px' : '1px';
+                tick.style.backgroundColor = isMajor ? (i === 0 ? '#ef4444' : 'white') : 'rgba(255,255,255,0.3)';
                 
                 wrapper.appendChild(tick);
                 dial.appendChild(wrapper);
@@ -279,9 +190,9 @@
             // 定位方位文字 (北東西南)
             const setPos = (id, deg) => {
                 const el = document.getElementById(id);
-                // 使用 transform 放置在圓周上 (半徑約 45% 以避開邊緣)
+                // 使用 CSS 放置在圓周上 (半徑約 45% 以避開邊緣)
                 const rad = (deg - 90) * (Math.PI / 180);
-                const r = 35; // %
+                const r = 35; // % (距離中心的百分比)
                 const x = 50 + r * Math.cos(rad);
                 const y = 50 + r * Math.sin(rad);
                 el.style.left = x + '%';
@@ -305,26 +216,6 @@
             els.displayEn.textContent = en;
             els.displayDeg.textContent = Math.round(state.heading) + "°";
             
-            // GPS 數據
-            els.valLat.textContent = formatCoord(state.location.lat, 'lat');
-            els.valLng.textContent = formatCoord(state.location.lng, 'lng');
-            els.valAlt.textContent = state.location.hasData ? `${state.location.alt.toFixed(1)} m` : "-- m";
-            els.valSpeed.textContent = state.location.hasData ? `${state.location.speed.toFixed(1)} km/h` : "-- km/h";
-            
-            // 按鈕狀態
-            if (state.location.hasData && !state.isAnalyzing) {
-                els.analyzeBtn.disabled = false;
-                els.analyzeBtn.className = "w-full flex items-center justify-center gap-2 p-3 rounded-xl font-bold transition-all mt-4 mb-3 text-lg bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-500/30 active:scale-[0.98]";
-                els.analyzeBtn.innerHTML = `<i data-lucide="sparkles" class="w-5 h-5"></i> ✨ 深度地點分析`;
-            } else if (state.isAnalyzing) {
-                els.analyzeBtn.disabled = true;
-                els.analyzeBtn.className = "w-full flex items-center justify-center gap-2 p-3 rounded-xl font-bold transition-all mt-4 mb-3 text-lg bg-slate-700 text-slate-400 cursor-not-allowed";
-                els.analyzeBtn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> AI 分析中...`;
-            } else {
-                els.analyzeBtn.disabled = true;
-                els.analyzeBtn.className = "w-full flex items-center justify-center gap-2 p-3 rounded-xl font-bold transition-all mt-4 mb-3 text-lg bg-slate-700 text-slate-400 cursor-not-allowed";
-                els.analyzeBtn.innerHTML = `<i data-lucide="sparkles" class="w-5 h-5"></i> ✨ 深度地點分析`;
-            }
             createIcons();
         }
 
@@ -340,41 +231,8 @@
             updateUI();
         }
 
-        function handleGeolocation(pos) {
-            state.location = {
-                lat: pos.coords.latitude,
-                lng: pos.coords.longitude,
-                alt: pos.coords.altitude || 0,
-                speed: pos.coords.speed ? (pos.coords.speed * 3.6) : 0,
-                hasData: true
-            };
-            updateUI();
-        }
-
-        function showModal(title, content, isError = false, sources = []) {
-            els.modalTitleText.textContent = title;
+        function showError(content) {
             els.modalContent.innerHTML = `<p>${content}</p>`;
-            
-            const iconName = isError ? 'alert-triangle' : 'sparkles';
-            const colorClass = isError ? 'text-red-400' : 'text-orange-400';
-            
-            els.modalTitleText.parentElement.className = `text-xl font-bold flex items-center gap-2 ${colorClass}`;
-            els.modalIcon.setAttribute('data-lucide', iconName);
-            
-            // 來源列表
-            els.sourcesList.innerHTML = '';
-            if (sources.length > 0) {
-                els.modalSources.classList.remove('hidden');
-                sources.forEach(src => {
-                    const li = document.createElement('li');
-                    li.className = "flex items-start text-xs text-slate-400 hover:text-orange-300";
-                    li.innerHTML = `<i data-lucide="link" class="w-3 h-3 mt-1 mr-2 flex-shrink-0"></i><a href="${src.uri}" target="_blank" class="truncate">${src.title}</a>`;
-                    els.sourcesList.appendChild(li);
-                });
-            } else {
-                els.modalSources.classList.add('hidden');
-            }
-
             els.modal.classList.remove('hidden');
             createIcons();
         }
@@ -388,11 +246,11 @@
                         state.permissionGranted = true;
                         window.addEventListener('deviceorientation', handleOrientation, true);
                     } else {
-                        showModal("權限失敗", "羅盤權限被拒絕。請至 iPad 設定 > Safari > 網站設定中開啟權限。", true);
+                        showError("羅盤權限被拒絕。請至 iPad 設定 > Safari > 網站設定中開啟「動作與方向取用權限」。");
                         return;
                     }
                 } catch (e) {
-                    showModal("錯誤", "無法請求權限 (可能需要 HTTPS)。", true);
+                    showError("無法請求權限。請確認此網頁是否透過 HTTPS 連線開啟。");
                     console.error(e);
                     return;
                 }
@@ -402,56 +260,11 @@
                 window.addEventListener('deviceorientation', handleOrientation, true);
             }
 
-            // GPS
-            if (navigator.geolocation) {
-                navigator.geolocation.watchPosition(handleGeolocation, (err) => {
-                    console.warn("GPS Error", err);
-                }, { enableHighAccuracy: true });
-            }
-
             // 更新 UI 狀態
             els.lockScreen.classList.add('hidden');
             els.permissionDot.classList.remove('opacity-50');
             els.permissionDot.classList.add('bg-green-500', 'border-green-500');
             updateUI();
-        });
-
-        // ================= Gemini AI =================
-        els.analyzeBtn.addEventListener('click', async () => {
-            if (!state.location.hasData) return;
-            
-            state.isAnalyzing = true;
-            updateUI(); // 顯示 loading
-            
-            const { lat, lng } = state.location;
-            const query = `Analyze location: ${lat.toFixed(6)}, ${lng.toFixed(6)}. Provide a brief summary of geographical/historical significance in Traditional Chinese.`;
-            const payload = {
-                contents: [{ parts: [{ text: query }] }],
-                tools: [{ "google_search": {} }]
-            };
-
-            try {
-                const res = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "無法取得分析結果。";
-                
-                let sources = [];
-                const attribs = data.candidates?.[0]?.groundingMetadata?.groundingAttributions;
-                if (attribs) {
-                    sources = attribs.map(a => ({ uri: a.web?.uri, title: a.web?.title })).filter(s => s.uri && s.title).slice(0, 3);
-                }
-
-                showModal("地點分析報告", text, false, sources);
-            } catch (e) {
-                showModal("分析失敗", "無法連線至 AI 服務，請稍後再試。", true);
-            } finally {
-                state.isAnalyzing = false;
-                updateUI();
-            }
         });
 
         els.modalClose.addEventListener('click', () => {
